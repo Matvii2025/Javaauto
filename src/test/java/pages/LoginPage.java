@@ -41,7 +41,6 @@ public class LoginPage {
 
         wait.until(ExpectedConditions.elementToBeClickable(loginButton)).click();
     }
-
     public String getMessage() {
         wait.until(ExpectedConditions.visibilityOf(messageElement));
         return messageElement.getText().trim();
