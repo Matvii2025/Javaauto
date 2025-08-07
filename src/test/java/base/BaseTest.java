@@ -16,7 +16,7 @@ public class BaseTest {
 
     @BeforeEach
     public void setUp() {
-        WebDriverManager.chromedriver().setup();  // 🔄 автоматичне налаштування chromedriver
+        WebDriverManager.chromedriver().setup();  //
 
         driver = new ChromeDriver();
         driver.manage().window().maximize();
