@@ -1,27 +1,30 @@
 package base;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import utils.DriverFactory;
 
 import java.time.Duration;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class BaseTest {
 
     protected WebDriver driver;
     protected WebDriverWait wait;
 
+    @BeforeAll
+    void printRunConfig() {
+        System.out.printf("[RUN CONFIG] remote=%s, browser=%s, gridUrl=%s, headless=%s%n",
+                System.getProperty("remote", "false"),
+                System.getProperty("browser", "chrome"),
+                System.getProperty("gridUrl", "http://localhost:4444/wd/hub"),
+                System.getProperty("headless", "false"));
+    }
+
     @BeforeEach
     public void setUp() {
-        WebDriverManager.chromedriver().setup();  //
-
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-
+        driver = DriverFactory.createDriver();                 // локально або GRID — залежно від -Dremote
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
