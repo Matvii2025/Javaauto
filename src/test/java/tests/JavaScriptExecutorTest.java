@@ -1,6 +1,7 @@
 package tests;
 
 import base.BaseTest;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -8,6 +9,7 @@ import utils.JsUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("regression")
 public class JavaScriptExecutorTest extends BaseTest {
 
     @Test

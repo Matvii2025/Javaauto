@@ -2,6 +2,7 @@ package tests;
 
 import base.BaseTest;
 import lombok.var;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import pages.DemoQADroppablePage;
 import pages.DemoQASelectablePage;
@@ -12,6 +13,7 @@ import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("regression")
 public class ActionsTest extends BaseTest {
 
     @Test

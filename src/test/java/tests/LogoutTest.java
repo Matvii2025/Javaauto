@@ -2,11 +2,14 @@ package tests;
 
 import base.BaseTest;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import pages.LoginPage;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Tag("smoke")
 public class LogoutTest extends BaseTest {
 
     @Test

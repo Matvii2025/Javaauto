@@ -14,39 +14,29 @@ import java.time.Duration;
 public class DriverFactory {
 
     public static WebDriver createDriver() {
-        String browser = System.getProperty("browser", "chrome").toLowerCase();
-        boolean remote = Boolean.parseBoolean(System.getProperty("remote", "false"));
-        String gridUrl = System.getProperty("gridUrl", "http://localhost:4444/wd/hub");
-        boolean headless = Boolean.parseBoolean(System.getProperty("headless", "false"));
+        String browser  = System.getProperty("browser",  Config.browser()  != null ? Config.browser()  : "chrome").toLowerCase();
+        boolean remote  = Boolean.parseBoolean(System.getProperty("remote",  String.valueOf(Config.remote())));
+        String gridUrl  = System.getProperty("gridUrl",  Config.gridUrl()  != null ? Config.gridUrl()  : "http://localhost:4444/wd/hub");
+        boolean headless= Boolean.parseBoolean(System.getProperty("headless",String.valueOf(Config.headless())));
 
         WebDriver driver;
 
         switch (browser) {
         case "firefox": {
-            FirefoxOptions opts = new FirefoxOptions();
-            opts.setAcceptInsecureCerts(true);
-            if (headless) opts.addArguments("-headless");
+            FirefoxOptions o = new FirefoxOptions();
+            o.setAcceptInsecureCerts(true);
+            if (headless) o.addArguments("-headless");
 
-            if (remote) {
-                driver = new RemoteWebDriver(toUrl(gridUrl), opts);
-            } else {
-                WebDriverManager.firefoxdriver().setup();
-                driver = new FirefoxDriver(opts);
-            }
+            driver = remote ? new RemoteWebDriver(toUrl(gridUrl), o) : localFirefox(o);
             break;
         }
-        case "chrome":
-        default: {
-            ChromeOptions opts = new ChromeOptions();
-            opts.setAcceptInsecureCerts(true);
-            if (headless) opts.addArguments("--headless=new");
+        default: { // chrome
+            ChromeOptions o = new ChromeOptions();
+            o.setAcceptInsecureCerts(true);
+            if (headless) o.addArguments("--headless=new");
+            o.addArguments("--window-size=1920,1080");
 
-            if (remote) {
-                driver = new RemoteWebDriver(toUrl(gridUrl), opts);
-            } else {
-                WebDriverManager.chromedriver().setup();
-                driver = new ChromeDriver(opts);
-            }
+            driver = remote ? new RemoteWebDriver(toUrl(gridUrl), o) : localChrome(o);
         }
         }
 
@@ -58,5 +48,15 @@ public class DriverFactory {
     private static URL toUrl(String s) {
         try { return new URL(s); }
         catch (Exception e) { throw new RuntimeException("Bad gridUrl: " + s, e); }
+    }
+
+    private static WebDriver localChrome(ChromeOptions o) {
+        WebDriverManager.chromedriver().setup();
+        return new ChromeDriver(o);
+    }
+
+    private static WebDriver localFirefox(FirefoxOptions o) {
+        WebDriverManager.firefoxdriver().setup();
+        return new FirefoxDriver(o);
     }
 }
