@@ -13,19 +13,22 @@ import utils.DriverFactory;
 import java.time.Duration;
 
 @ExtendWith(ScreenshotOnFailureExtension.class)
-public class BaseTest {
-    public WebDriver driver;                 // важливо: доступно для extension
+public abstract class BaseTest {
+    public WebDriver driver;
     protected WebDriverWait wait;
     protected final Logger log = LogManager.getLogger(getClass());
 
+    // ВАЖЛИВО: повністю кваліфіковане ім'я, щоб не плуталось з utils.Config
+    protected org.example.hardcore.config.Config cfg;
+
     @BeforeEach
     void setUp() {
-        log.info("[RUN CONFIG] env={}, remote={}, browser={}, gridUrl={}, headless={}",
+        cfg = org.example.hardcore.config.Config.get(); // Singleton
+        log.info("[RUN CONFIG] env={}, browser={}, headless={}",
                 System.getProperty("env","dev"),
-                System.getProperty("remote","false"),
                 System.getProperty("browser","chrome"),
-                System.getProperty("gridUrl","http://localhost:4444/wd/hub"),
-                System.getProperty("headless","false"));
+                cfg.headless);
+
         driver = DriverFactory.createDriver();
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
@@ -33,5 +36,6 @@ public class BaseTest {
     @AfterEach
     void tearDown() {
         if (driver != null) driver.quit();
+        log.info("Driver quit");
     }
 }

@@ -1,7 +1,6 @@
 package tests;
 
 import base.BaseTest;
-import lombok.var;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import pages.DemoQADroppablePage;
