@@ -1,15 +1,21 @@
 package pages;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.time.Duration;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.PageFactory;
+import pages.decorators.CoreActions;
+import pages.decorators.LoggingActions;
+import pages.decorators.UiActions;
 
 public abstract class BasePage {
     protected final WebDriver driver;
-    protected final WebDriverWait wait;
-    protected final Logger log = LogManager.getLogger(getClass());
-    protected BasePage(WebDriver d){ this.driver=d; this.wait=new WebDriverWait(d, Duration.ofSeconds(10)); }
+    private final UiActions actions = new LoggingActions(new CoreActions());
+
+    protected BasePage(WebDriver driver) {
+        this.driver = driver;
+        PageFactory.initElements(driver, this);
+    }
+    protected void click(WebElement e) { actions.click(driver, e); }
+    protected void type(WebElement e, String text) { actions.type(driver, e, text); }
+    protected String textOf(WebElement e) { return actions.textOf(driver, e); }
 }

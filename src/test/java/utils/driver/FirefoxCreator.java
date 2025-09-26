@@ -1,10 +1,10 @@
-package org.example.hardcore.driver.creator;
+package utils.driver;
 
-import org.example.hardcore.config.Config;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import utils.Config;
 
 public class FirefoxCreator extends BrowserCreator {
     @Override public WebDriver create(Config cfg) {

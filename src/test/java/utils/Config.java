@@ -3,39 +3,61 @@ package utils;
 import java.io.InputStream;
 import java.util.Properties;
 
+/** Singleton конфігурації для тестів (env, headless, credentials). */
 public class Config {
-    private static final Properties props = new Properties();
+    public final String baseUrl;
+    public final boolean headless;
+    public final String username;
+    public final String password;
 
-    static {
-        String env = System.getProperty("env");
-        if (env == null || env.trim().isEmpty()) env = "dev";   // <-- без isBlank()
-        String resource = "env/" + env.toLowerCase() + ".properties";
+    private static volatile Config INSTANCE;
 
-        try (InputStream is = Thread.currentThread()
-                .getContextClassLoader()
-                .getResourceAsStream(resource)) {
+    private Config(String baseUrl, boolean headless, String username, String password) {
+        this.baseUrl = baseUrl;
+        this.headless = headless;
+        this.username = username;
+        this.password = password;
+    }
 
-            if (is == null) {
-                throw new IllegalStateException("Resource not found on classpath: " + resource);
+    public static Config get() {
+        if (INSTANCE == null) {
+            synchronized (Config.class) {
+                if (INSTANCE == null) INSTANCE = loadInternal();
             }
-            props.load(is);
-            System.out.println("[CONFIG] Loaded: " + resource);
-        } catch (Exception e) {
-            throw new ExceptionInInitializerError("Failed to load " + resource + ": " + e);
         }
+        return INSTANCE;
     }
 
-    private static String get(String key) {
-        String sys = System.getProperty(key);
-        if (sys != null && !sys.trim().isEmpty()) return sys;   // <-- без isBlank()
-        return props.getProperty(key);
+    public static void reload() {
+        synchronized (Config.class) { INSTANCE = loadInternal(); }
     }
 
-    public static String baseUrl()   { return get("baseUrl"); }
-    public static String username()  { return get("username"); }
-    public static String password()  { return get("password"); }
-    public static String browser()   { return get("browser"); }
-    public static String gridUrl()   { return get("gridUrl"); }
-    public static boolean remote()   { return Boolean.parseBoolean(get("remote")); }
-    public static boolean headless() { return Boolean.parseBoolean(get("headless")); }
+    private static Config loadInternal() {
+        String env = System.getProperty("env", "dev");
+        String propsPath = "env/" + env + ".properties"; // src/test/resources/env/*.properties
+
+        Properties p = new Properties();
+        try (InputStream in = Thread.currentThread().getContextClassLoader()
+                .getResourceAsStream(propsPath)) {
+            if (in != null) p.load(in);
+        } catch (Exception ignored) { }
+
+        String baseUrl   = sysOrProp("base.url",          p.getProperty("base.url", "https://example.com"));
+        boolean headless = Boolean.parseBoolean(sysOrProp("headless", p.getProperty("browser.headless","false")));
+
+        // ⬇️ ДОДАНО: читаємо креденшали (можна перекрити -Dusername/-Dpassword)
+        String username  = sysOrProp("username",          p.getProperty("username", "user"));
+        String password  = sysOrProp("password",          p.getProperty("password", "pass"));
+
+        return new Config(baseUrl, headless, username, password);
+    }
+
+    private static String sysOrProp(String key, String fallback) {
+        String v = System.getProperty(key);
+        return (v != null && !v.isBlank()) ? v : fallback;
+    }
+
+    // ⬇️ ДОДАНО: щоб не міняти твоє User.fromConfig()
+    public static String username() { return get().username; }
+    public static String password() { return get().password; }
 }

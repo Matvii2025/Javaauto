@@ -1,7 +1,7 @@
-package org.example.hardcore.driver.creator;
+package utils.driver;
 
-import org.example.hardcore.config.Config;
 import org.openqa.selenium.WebDriver;
+import utils.Config;
 
 public abstract class BrowserCreator {
     public abstract WebDriver create(Config cfg);
