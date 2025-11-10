@@ -3,6 +3,7 @@ package com.tests;
 import com.base.BaseTest;
 import com.pages.LoginPage;
 import com.pages.SecureAreaPage;
+import com.utils.ScreenshotUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -20,8 +21,8 @@ public class LogoutTest extends BaseTest {
 
         secure.logout();
 
-        // перевірка: знову на сторінці логіну
         wait.until(ExpectedConditions.urlContains("/login"));
         assertTrue(driver.getCurrentUrl().contains("/login"));
+        ScreenshotUtil.take(driver, "contextMenu_showsAlert");
     }
 }

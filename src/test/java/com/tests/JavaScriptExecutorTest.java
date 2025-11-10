@@ -1,6 +1,7 @@
 package com.tests;
 
 import com.base.BaseTest;
+import com.utils.ScreenshotUtil;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -22,6 +23,7 @@ public class JavaScriptExecutorTest extends BaseTest {
 
         WebElement deleteBtn = driver.findElement(By.cssSelector("button.added-manually"));
         assertTrue(deleteBtn.isDisplayed(), "Delete button must be visible after JS click");
+        ScreenshotUtil.take(driver, "contextMenu_showsAlert");
     }
 
     @Test
@@ -33,5 +35,6 @@ public class JavaScriptExecutorTest extends BaseTest {
         JsUtils.setValueByJS(driver, user, "tomsmith");                    // 4) JS set value
 
         assertEquals("tomsmith", user.getAttribute("value"));
+        ScreenshotUtil.take(driver, "contextMenu_showsAlert");
     }
 }

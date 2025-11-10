@@ -7,6 +7,7 @@ import com.pages.DemoQADroppablePage;
 import com.pages.DemoQASelectablePage;
 import com.pages.HerokuContextMenuPage;
 import com.utils.ActionsUtil;
+import com.utils.ScreenshotUtil;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,6 +20,7 @@ public class ActionsTest extends BaseTest {
         ActionsUtil actions = new ActionsUtil(driver);
         actions.dragAndDrop(page.getDraggable(), page.getDroppable());
         assertTrue(page.droppableText().toLowerCase().contains("dropped"), "Should say 'Dropped!'");
+        ScreenshotUtil.take(driver, "contextMenu_showsAlert");
     }
 
     @Test
@@ -27,6 +29,7 @@ public class ActionsTest extends BaseTest {
         ActionsUtil actions = new ActionsUtil(driver);
         String alertText = actions.contextClickAndGetAlertText(page.box());
         assertEquals("You selected a context menu", alertText);
+        ScreenshotUtil.take(driver, "contextMenu_showsAlert");
     }
 
     @Test
@@ -43,7 +46,6 @@ public class ActionsTest extends BaseTest {
         int i3 = size - 1;
         int[] idx = { i1, i2, i3 };
 
-        // кліки з CTRL по КОЖНОМУ елементу окремою послідовністю (менше флаків)
         for (int i : idx) {
             org.openqa.selenium.WebElement el = page.items().get(i);
             ((org.openqa.selenium.JavascriptExecutor) driver).executeScript(
@@ -87,5 +89,6 @@ public class ActionsTest extends BaseTest {
             return cls != null && cls.contains("active");
         }).count();
         org.junit.jupiter.api.Assertions.assertEquals(3, selected, "Exactly 3 items should be active");
+        ScreenshotUtil.take(driver, "contextMenu_showsAlert");
     }
 }
