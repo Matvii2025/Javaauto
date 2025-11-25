@@ -58,4 +58,17 @@ public class LoginPage {
         login(user, pass);
         return new SecureAreaPage(driver, wait).waitLoaded();
     }
+    public void enterUsername(String username) {
+        wait.until(ExpectedConditions.visibilityOf(usernameField)).clear();
+        usernameField.sendKeys(username);
+    }
+
+    public void enterPassword(String password) {
+        wait.until(ExpectedConditions.visibilityOf(passwordField)).clear();
+        passwordField.sendKeys(password);
+    }
+
+    public void clickLogin() {
+        wait.until(ExpectedConditions.elementToBeClickable(loginButton)).click();
+    }
 }
